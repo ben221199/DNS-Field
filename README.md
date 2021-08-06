@@ -4,12 +4,14 @@
 
 | Name | Description | Size | Format | Example |
 | --- | --- | --- | --- | --- |
+| BIT | One bit | 1 bit | | `0` or `1` |
 | FQDN (*) | Fully Qualified Domain Name (could be compressed with pointers) | variable | ( {UINT8:length} {CHAR*} ) | www.iana.org. |
 | INT32 | Signed 32-bit integer (big endian) | 32 bits | | -90000 |
 | IPV4 | Internet Protocol address version 4 | 32 bits | {UINT8} {UINT8} {UINT8} {UINT8} | 192.168.1.5 |
 | IPV6 | Internet Protocol address version 6 | 128 bits | | {UINT16} {UINT16} {UINT16} {UINT16} {UINT16} {UINT16} {UINT16} {UINT16} | 2001:0db8:85a3:0000:0000:8a2e:0370:7334 |
 | NID | Node Id | 64 bits | {UINT16} {UINT16} {UINT16} {UINT16} | 0015:5fff:ff21:ee65 |
 | STRING | String | variable | {UINT8:length} {CHAR*} | "v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com" |
+| UINT7 | Unsigned 7-bit integer (big endian) | 7 bits | | 126 |
 | UINT8 | Unsigned 8-bit integer (big endian) | 8 bits | | 30 |
 | UINT16 | Unsigned 16-bit integer (big endian) | 16 bits | | 500 |
 | UINT32 | Unsigned 32-bit integer (big endian) | 32 bits | | 700000 |
@@ -108,16 +110,16 @@
 | <ins>*Unassigned*</ins> | 110-248 |
 | TKEY | 249 |
 | TSIG | 250 |
-| IXFR | 251 |
-| AXFR | 252 |
-| MAILB | 253 |
-| MAILA | 254 |
-| * | 255 |
-| URI | 256 |
-| CAA | 257 |
-| AVC | 258 |
-| DOA | 259 |
-| AMTRELAY | 260 |
+| IXFR | 251 | <ins>*Requests all record types in zone changed since last check*</ins> |
+| AXFR | 252 | <ins>*Requests all record types in zone*</ins> |
+| MAILB | 253 | <ins>*Requests all `MB`, `MG` and `MR` record types*</ins> |
+| MAILA | 254 | <ins>*Requests all `MF` and `MD` record types*</ins> |
+| * / ANY | 255 | <ins>*Requests all record types*</ins> |
+| URI | 256 | {UINT16:priority} {UINT16:weight} {*:target} |
+| CAA | 257 | {UINT8:flags} {STRING:tag} {*:value} |
+| AVC | 258 | <ins>*See `TXT` record type*</ins> |
+| DOA | 259 | {UINT32:doa-enterprise} {UINT32:doa-type} {UINT8:doa-location} {STRING:doa-media-type} {*:doa-data} |
+| AMTRELAY | 260 |  - {UINT16:precedence} {BIT:d} {UINT7:type=0}<br> - {UINT16:precedence} {BIT:d} {UINT7:type=1} {IPV4:relay}<br> - {UINT16:precedence} {BIT:d} {UINT7:type=2} {IPV6:relay}<br> - {UINT16:precedence} {BIT:d} {UINT7:type=3} {FQDN:relay} |  - `10 0 1 203.0.113.15`<br> - `10 0 2 2001:db8::15`<br> - `128 1 3 amtrelays.example.com.` |
 | <ins>*Unassigned*</ins> | 261-32767 |
-| TA | 32768 |
-| DLV | 32769 |
+| TA | 32768 | <ins>*See `DS` record type*</ins> |
+| DLV | 32769 | <ins>*See `DS` record type*</ins> |
