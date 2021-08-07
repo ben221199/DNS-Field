@@ -4,7 +4,10 @@
 
 | Name | Description | Size | Format | Example |
 | --- | --- | --- | --- | --- |
+| AESA |
 | BIT | One bit | 1 bit | | `0` or `1` |
+| E164 | E.164 phone number |
+| EID | Endpoint Identifier | 64 bits | E32C 6F78 163A 9348 |
 | EUI48 | 48-bit Extended Unique Identifier | 48 bits | 00-00-5e-00-53-2a |
 | EUI64 | 64-bit Extended Unique Identifier | 64 bits | 00-00-5e-ef-10-00-00-2a |
 | FQDN (*) | Fully Qualified Domain Name (could be compressed with pointers) | variable | ( {UINT8:length} {CHAR*} ) | www.iana.org. |
@@ -43,7 +46,7 @@
 | MG | 8 | {FQDN:mgmname} |
 | MR | 9 | {FQDN:newname} |
 | NULL | 10 | {*:anything} | |
-| WKS | 11 | {IPV4:address} {UINT8:protocol} {__BITMAP:bit_map}
+| WKS | 11 | {IPV4:address} {UINT8:protocol} {__BITMAP:bit_map} |
 | PTR | 12 | {FQDN:ptrdname} | server.iana.org. | 
 | HINFO | 13 | {STRING:cpu} {STRING:os} |
 | MINFO | 14 | {FQDN:rmailbx} {FQDN:emailbx} |
@@ -52,32 +55,32 @@
 | RP | 17 | {FQDN:mbox-dname} {FQDN:txt-dname} |
 | AFSDB | 18 | {UINT16:subtype} {FQDN:hostname} |
 | X25 | 19 | {STRING:PSDN-address} |
-| ISDN | 20 | {STRING:ISDN-address} {STRING?:sa}
-| RT | 21 | {UINT16:preference} {FQDN:intermediate-host}
-| NSAP | 22 |
-| NSAP-PTR | 23 |
-| SIG | 24 |
-| KEY | 25 |
-| PX | 26 | {UINT16:preference} {FQDN:map822} {FQDN:mapx400}
-| GPOS | 27 | {STRING:longitude} {STRING:latitude} {STRING:altitude}
+| ISDN | 20 | {STRING:ISDN-address} {STRING?:sa} |
+| RT | 21 | {UINT16:preference} {FQDN:intermediate-host} |
+| NSAP | 22 | {*:nsap} |
+| NSAP-PTR | 23 | {FQDN:_ptrdname} |
+| SIG | 24 | {UINT16:type_covered} {UINT8:algorithm} {UINT8:labels} {UINT32:original_ttl} {UINT32:signature_expiration} {UINT32:signature_inception} {UINT16:key_tag} {FQDN:signers_name} {*:signature} |
+| KEY | 25 | {UINT16:flags} {UINT8:protocol} {UINT8:algorithm} {*:public_key} |
+| PX | 26 | {UINT16:preference} {FQDN:map822} {FQDN:mapx400} |
+| GPOS | 27 | {STRING:longitude} {STRING:latitude} {STRING:altitude} |
 | AAAA | 28 | {IPV6:__address} |
 | LOC | 29 | {UINT16:version=0} {UINT16:size} {UINT16:horiz_pre} {UINT16:vert_pre} {UINT16:latitude} {UINT16:latitude} {UINT16:longitude} {UINT16:longitude} {INT16:altitude} {INT16:altitude} |
-| NXT | 30 | {FQDN:next_domain_name} {__BITMAP2:type_bit_map}
-| EID | 31 |
+| NXT | 30 | {FQDN:next_domain_name} {__BITMAP2:type_bit_map} |
+| EID | 31 | {EID:eid} |
 | NIMLOC | 32 |
-| SRV | 33 | {UINT16:priority} {UINT16:weight} {UINT16:port} {FQDN:target}
-| ATMA | 34 |
-| NAPTR | 35 | 
-| KX | 36 |
-| CERT | 37 |
-| A6 | 38 |
-| DNAME | 39 |
-| SINK | 40 |
-| OPT | 41 |
-| APL | 42 |
-| DS | 43 |
-| SSHFP | 44 |
-| IPSECKEY | 45 |
+| SRV | 33 | {UINT16:priority} {UINT16:weight} {UINT16:port} {FQDN:target} |
+| ATMA | 34 |  - {UINT8:format=0} {AESA:address}<br> - {UINT8:format=1} {E164:address} |
+| NAPTR | 35 | {UINT16:order} {UINT16:preference} {STRING:flags} {STRING:service} {STRING:regexp} {FQDN:replacement} |
+| KX | 36 | {UINT16:preference} {FQDN:exchanger} |
+| CERT | 37 | {UINT16:type} {UINT16:key_tag} {UINT8:algorithm} {*:certificate_or_crl} |
+| A6 | 38 | {UINT8:prefix_length} {*:address_suffix} {FQDN:prefix_name} |
+| DNAME | 39 | {FQDN:target} |
+| SINK | 40 | {UINT16:coding} {UINT16:subcoding} {*:data} |
+| OPT | 41 | {UINT16:option-code} {UINT16:option-length} {*:option-data} |
+| APL | 42 | {UINT16:addressfamily} {UINT8:prefix} {BIT:n} {UINT7:afdlength} {*:afdpart} |
+| DS | 43 | {UINT16:key_tag} {UINT8:algorithm} {UINT8:digest_type} {*:digest} |
+| SSHFP | 44 | {UINT8:algorithm} {UINT8:fp_type} {*:fingerprint} |
+| IPSECKEY | 45 |  - {UINT8:precedence} {UINT8:gateway_type=1} {UINT8:algorithm} {IPV4:gateway} {\*:public_key}<br> - {UINT8:precedence} {UINT8:gateway_type=2} {UINT8:algorithm} {IPV6:gateway} {\*:public_key}<br> - {UINT8:precedence} {UINT8:gateway_type=3} {UINT8:algorithm} {FQDN:gateway} {*:public_key} |
 | RRSIG | 46 |
 | NSEC | 47 |
 | DNSKEY | 48 |
