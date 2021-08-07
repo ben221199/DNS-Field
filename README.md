@@ -5,6 +5,8 @@
 | Name | Description | Size | Format | Example |
 | --- | --- | --- | --- | --- |
 | BIT | One bit | 1 bit | | `0` or `1` |
+| EUI48 | 48-bit Extended Unique Identifier | 48 bits | 00-00-5e-00-53-2a |
+| EUI64 | 64-bit Extended Unique Identifier | 64 bits | 00-00-5e-ef-10-00-00-2a |
 | FQDN (*) | Fully Qualified Domain Name (could be compressed with pointers) | variable | ( {UINT8:length} {CHAR*} ) | www.iana.org. |
 | INT32 | Signed 32-bit integer (big endian) | 32 bits | | -90000 |
 | IPV4 | Internet Protocol address version 4 | 32 bits | {UINT8} {UINT8} {UINT8} {UINT8} | 192.168.1.5 |
@@ -15,6 +17,7 @@
 | UINT8 | Unsigned 8-bit integer (big endian) | 8 bits | | 30 |
 | UINT16 | Unsigned 16-bit integer (big endian) | 16 bits | | 500 |
 | UINT32 | Unsigned 32-bit integer (big endian) | 32 bits | | 700000 |
+| UINT48 | Unsigned 48-bit integer (big endian) | 48 bits | | 70005900 |
 
 (*) FQDN could be relative in a zone file, but is always sent as absolute in the DNS protocol. Pointers can be used in FQDNs as compression.
 
@@ -84,32 +87,32 @@
 | TLSA | 52 |
 | SMIMEA | 53 |
 | <ins>*Unassigned*</ins> | 54 |
-| HIP | 55 |
+| HIP | 55 | {UINT8:hit_length} {UINT8:pk_algorithm} {UINT16:pk_length} {\*:hit} {\*:public_key} {FQDN*:rendezvous-server(s)} |
 | NINFO | 56 |
 | RKEY | 57 |
 | TALINK | 58 |
-| CDS | 59 |
-| CDNSKEY | 60 |
+| CDS | 59 | <ins>*See `DS` record type*</ins> |
+| CDNSKEY | 60 | <ins>*See `DNSKEY` record type*</ins> |
 | OPENPGPKEY | 61 |
-| CSYNC | 62 |
-| ZONEMD | 63 |
-| SVCB | 64 |
-| HTTPS | 65 |
+| CSYNC | 62 | {UINT32:soa_serial} {UINT16:flags} {__BITMAP3:type_bit_map} |
+| ZONEMD | 63 | {UINT32:serial} {UINT8:scheme} {UINT8:hash_algorithm} {*:digest} |
+| SVCB | 64 | {UINT16:priority} {FQDN:domainname} ( {UINT16:paramkey} {UINT16:length} {\*:paramvalue} )\* |
+| HTTPS | 65 | <ins>*See `SVCB` record type*</ins> |
 | <ins>*Unassigned*</ins> | 66-98 |
-| SPF | 99 | {STRING+}
-| UINFO | 100 |
-| UID | 101 |
-| GID | 102 |
-| UNSPEC | 103 |
+| SPF | 99 | {STRING+} |
+| UINFO | 100 | <ins>*Reserved*</ins> |
+| UID | 101 | <ins>*Reserved*</ins> |
+| GID | 102 | <ins>*Reserved*</ins> |
+| UNSPEC | 103 | <ins>*Reserved*</ins> |
 | NID | 104 | {UINT16:preference} {NID:nodeid} |
 | L32 | 105 | {UINT16:preference} {IPV4:locator32} |
 | L64 | 106 | {UINT16:preference} {NID:locator64} |
 | LP | 107 | {UINT16:preference} {FQDN:fqdn} |
-| EUI48 | 108 |
-| EUI64 | 109 |
+| EUI48 | 108 | {EUI48:eui-48_address} |
+| EUI64 | 109 | {EUI64:eui-64_address} |
 | <ins>*Unassigned*</ins> | 110-248 |
-| TKEY | 249 |
-| TSIG | 250 |
+| TKEY | 249 | {FQDN:algorithm} {UINT32:inception} {UINT32:expiration} {UINT16:mode} {UINT16:error} {UINT16:key_size} {\*:key_data} {UINT16:other_size} {\*:other_data} |
+| TSIG | 250 | {FQDN:algorithm_name} {UINT48:time_signed} {UINT16:fudge} {UINT16:mac_size} {\*:mac} {UINT16:orginal_id} {UINT16:error} {UINT16:other_len} {\*:other_data} |
 | IXFR | 251 | <ins>*Requests all record types in zone changed since last check*</ins> |
 | AXFR | 252 | <ins>*Requests all record types in zone*</ins> |
 | MAILB | 253 | <ins>*Requests all `MB`, `MG` and `MR` record types*</ins> |
